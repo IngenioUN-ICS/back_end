@@ -21,8 +21,8 @@ app.use(morgan('combined', {
 app.use(morgan('dev'));
 
 app.use(cors({
-    //origin: "http://localhost:8080",
-    origin: "https://ingeniofrontend.herokuapp.com",
+    origin: "http://localhost:8080",
+    //origin: "https://ingeniofrontend.herokuapp.com",
     credentials: true
 }) );
 app.use((req, res, next) => {
