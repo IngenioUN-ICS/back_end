@@ -52,8 +52,6 @@ usersCtrl.signout = ( req, res ) => {
     return res.status( 200 ).json({ message: "Bye" });
 }
 
-// Valeria
-
 usersCtrl.addAuthor = async ( req, res, next ) => {
     try {
         if ( req.user.role != 2 ) {
@@ -227,9 +225,7 @@ usersCtrl.getAllSavedPublications = async ( req, res ) => {
         }
     }
 }
-// Carlos
 
-// Juan
 usersCtrl.getAllUserCategories = async ( req, res ) => {
     try {
         if ( req.user.role == 2 )
@@ -388,7 +384,6 @@ usersCtrl.getAllUserAuthors = async ( req, res ) => {
         }
     }
 }
-// Tatiana
 
 // Any type of user can access this information
 usersCtrl.getAuthorPublications = async ( req, res ) => {

@@ -2,20 +2,15 @@ const { Router } = require( "express" );
 const router = Router( );
 
 const {
-    // Juan
     getAllUserCategories,
     getAllFollowings,
     getAllFollowers,
     getAllUserAuthors,
-    // Valeria
     addAuthor,
     getAllUsers,
     getAllAuthors,
     addMySavePublications,
     getAllSavedPublications,
-    // Carlos
-
-    // Tatiana
     getPersonalData,
     getRandomUsers,
     startFollowing,
@@ -29,20 +24,13 @@ const {
     createSubscribers
 } = require( "../controllers/notification.controller" )
 
-// Juan
-
-// Valeria
-
-// Carlos
 router
     .route( "/get-random-users/:role/:categoryId" )
     .get( getRandomUsers )
-// Tatiana
 
 const { isAuthenticated } = require( "../helpers/authenticated" );
 const { route } = require("./session");
 
-// Juan
 router
     .route( "/get-user-categories/:userId")
     .get( isAuthenticated, getAllUserCategories)
@@ -58,7 +46,6 @@ router
 router
     .route( "/get-followers/:userId")
     .get( isAuthenticated, getAllFollowers)
-// Valeria
 router
     .route( "/add-author" )
     .put( isAuthenticated, addAuthor, createSubscribers )
@@ -78,9 +65,7 @@ router
 router
     .route( "/get-save-publication" )
     .get( isAuthenticated, getAllSavedPublications );
-// Carlos
 
-// Tatiana
 router
     .route( "/get-personal-data/:userId" )
     .get( isAuthenticated, getPersonalData )

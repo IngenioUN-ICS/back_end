@@ -4,14 +4,6 @@ const logger = require( '../log/facadeLogger');
 
 const categoriesCtrl = { };
 
-// Juan
-
-// Valeria
-
-// Carlos
-
-// Tatiana
-
 // Only the administrator can use this function
 categoriesCtrl.addCategory = async ( req, res ) => {
     try{

@@ -6,13 +6,6 @@ const { replaceOne } = require('../models/User');
 
 const publicationsCtrl = { };
 
-// Juan
-
-// Valeria
-
-// Carlos
-
-// Tatiana
 publicationsCtrl.addPublication = async ( req, res, next ) => {
     try{
         if ( req.user.role != 1 )
