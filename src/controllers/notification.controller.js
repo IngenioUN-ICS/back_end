@@ -3,14 +3,6 @@ const logger = require( '../log/facadeLogger');
 
 const notificationCtrl = { };
 
-// Juan
-
-// Valeria
-
-// Carlos
-
-// Tatiana
-
 notificationCtrl.subscribe = async ( req, res ) => {
     try {
         if ( req.user.role == 2 )

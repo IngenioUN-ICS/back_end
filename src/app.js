@@ -21,13 +21,13 @@ app.use(morgan('combined', {
 app.use(morgan('dev'));
 
 app.use(cors({
-    //origin: "http://localhost:8080",
-    origin: "https://ingeniofrontend.herokuapp.com",
+    origin: "http://localhost:8080",
+    //origin: "https://ingeniofrontend.herokuapp.com",
     credentials: true
 }) );
 app.use((req, res, next) => {
-    //res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
-    res.header('Access-Control-Allow-Origin', 'https://ingeniofrontend.herokuapp.com');
+    //res.header('Access-Control-Allow-Origin', 'https://ingeniofrontend.herokuapp.com');
+    res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
     res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
     res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
     res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
@@ -43,7 +43,6 @@ app.use( passport.initialize( ) );
 app.use( passport.session( ) );
 
 // Routes
-
 app.use( '/session', require( './routes/session' ) );
 app.use( '/user', require( './routes/user' ) );
 app.use( '/author-request', require( './routes/authorRequest' ) );
@@ -51,13 +50,4 @@ app.use( '/publication', require( './routes/publication' ) );
 app.use( '/category', require( './routes/category' ) );
 app.use( '/notification', require( './routes/notification' ) );
 
-// Juan
-
-// Valeria
-
-// Carlos
-
-// Tatiana
-
 module.exports = app;
-

@@ -2,13 +2,6 @@ const { Router } = require( "express" );
 const router = Router( );
 
 const {
-    // Juan
-
-    // Valeria
-
-    // Carlos
-
-    // Tatiana
     getSummaryOfPublications,
     getPublication,
     addPublication
@@ -25,13 +18,7 @@ const {
 const {
     updatePublications
 } = require( "../controllers/category.controller" );
-// Juan
 
-// Valeria
-
-// Carlos
-
-// Tatiana
 
 router
     .route( "/get-publication/:publicationId" )
@@ -43,13 +30,6 @@ router
 
 const { isAuthenticated } = require( "../helpers/authenticated" );
 
-// Juan
-
-// Valeria
-
-// Carlos
-
-// Tatiana
 router
     .route( "/add-publication" )
     .post( isAuthenticated, addPublication, addPublicationToAuthor, updateNotifications, updatePublications );

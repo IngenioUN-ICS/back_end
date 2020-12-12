@@ -3,8 +3,6 @@ const logger = require( '../log/facadeLogger');
 
 const authorRequestCtrl = { };
 
-// Juan
-
 authorRequestCtrl.addAuthorRequest = async ( req, res ) => {
     try {
         if( req.user.role != 0 )
@@ -38,7 +36,7 @@ authorRequestCtrl.addAuthorRequest = async ( req, res ) => {
         }
     }
 }
-// Valeria
+
 authorRequestCtrl.getAllAuthorRequest = async ( req, res ) => {
     try {
         if ( req.user.role != 2 )
@@ -116,10 +114,5 @@ authorRequestCtrl.removeAuthorRequest = async ( req, res ) => {
         }
     }
 };
-
-// Carlos
-
-// Tatiana
-
 
 module.exports = authorRequestCtrl;
