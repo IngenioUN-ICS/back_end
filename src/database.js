@@ -1,12 +1,12 @@
-const mongoose = require( "mongoose" );
+const mongoose = require("mongoose");
+const config = require("./config");
 
-//mongoose.connect( 'mongodb://localhost/ingenio_database', {
-//mongoose.connect( 'mongodb+srv://Ingenio123:Ingenio123@clusteringenio-jv1l1.gcp.mongodb.net/<dbname>?retryWrites=true&w=majority', {
-mongoose.connect( 'mongodb+srv://IngenioUN:IngenioUN@cluster0.ejd2r.mongodb.net/<dbname>?retryWrites=true&w=majority', {
+mongoose
+  .connect(config.MONGODB_URI, {
     useCreateIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useFindAndModify: false
-})
-.then( db => console.log( "DB is connected" ) )
-.catch( err => console.error( err ));
+    useFindAndModify: false,
+  })
+  .then((db) => console.log("DB is connected"))
+  .catch((err) => console.error(err));
