@@ -1,150 +1,12 @@
 const User = require("../models/User");
-const Role = require("../models/Role");
-const AuthorRequest = require("../models/AuthorRequest");
 const logger = require("../log/facadeLogger");
 const Category = require("../models/Category");
+const AuthorRequest = require("../models/AuthorRequest");
 
 const usersCtrl = {};
 
-usersCtrl.signUp = async (req, res) => {
-  try {
-    // Getting the Request Body
-    const {
-      firstName,
-      lastName,
-      email1,
-      password,
-      confirmPassword,
-      roles,
-    } = req.body;
-
-    if (!firstName || !lastName || !email1 || !password || !confirmPassword)
-      return res.status(400).json({ message: "Incomplete data" });
-
-    const newUser = new User(req.body);
-    const checkEmail = newUser.emailIsValid(email1);
-    const checkPassword = newUser.passwordIsValid(password);
-
-    if (!checkEmail)
-      return res.status(400).json({ message: "The email format is not valid" });
-
-    if (!checkPassword)
-      return res
-        .status(400)
-        .json({ message: "The password format is not valid" });
-
-    if (password != confirmPassword)
-      return res.status(400).json({ message: "Password do not match" });
-
-    newUser.password = await newUser.encryptPassword(password.toString());
-
-    // checking for roles
-    if (req.body.roles) {
-      const foundRoles = await Role.find({ name: { $in: roles } });
-      newUser.roles = foundRoles.map((role) => role._id);
-    } else {
-      const role = await Role.findOne({ name: "user" });
-      newUser.roles = [role._id];
-    }
-
-    // Saving the User Object in Mongodb
-    const savedUser = await newUser.save();
-
-    // Create a token
-    const token = jwt.sign({ id: savedUser._id }, config.SECRET, {
-      expiresIn: 86400, // 24 hours
-    });
-
-    return res.status(200).json({ token });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json(error);
-  }
-};
-
-usersCtrl.signin = async (req, res) => {
-  try {
-    // Request body email can be an email or username
-    const userFound = await User.findOne({ email1: req.body.email1 }).populate(
-      "roles"
-    );
-
-    if (!userFound) return res.status(400).json({ message: "User Not Found" });
-
-    const match = await userFound.matchPassword(
-      req.body.password,
-      userFound.password
-    );
-
-    if (!match)
-      return res.status(401).json({
-        token: null,
-        message: "Invalid Password",
-      });
-
-    const token = jwt.sign({ id: userFound._id }, config.SECRET, {
-      expiresIn: 86400, // 24 hours
-    });
-
-    res.json({ token });
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-/*
-usersCtrl.signup = function (req, res, next) {
-  passport.authenticate("local-signup", function (err, user, info) {
-    if (user) {
-      req.logIn(user, function (error) {
-        if (error) return next(error);
-      });
-      logger.info(info.message);
-      return res.status(info.status).json({
-        id: user.id,
-        role: user.role,
-        message: info.message,
-      });
-    }
-    logger.warn(info.message);
-    return res.status(info.status).json({ message: info.message });
-  })(req, res, next);
-};
-
-usersCtrl.signin = function (req, res, next) {
-  passport.authenticate("local-signin", function (err, user, info) {
-    if (user) {
-      req.logIn(user, function (error) {
-        if (error) return next(error);
-      });
-      logger.info(info.message);
-      return res.status(info.status).json({
-        message: info.message,
-        role: user.role,
-        id: user.id,
-      });
-    }
-    logger.warn(info.message);
-    return res.status(info.status).json({ message: info.message });
-  })(req, res, next);
-};
-
-usersCtrl.signout = (req, res) => {
-  req.logout();
-  logger.info("The user has successfully logged out");
-  return res.status(200).json({ message: "Bye" });
-};
-*/
-
 usersCtrl.addAuthor = async (req, res, next) => {
   try {
-    if (req.user.role != 2) {
-      logger.warn("The user does not have the required permissions");
-      return res.status(401).json({
-        message: "You do not have the required permissions",
-      });
-    }
-
     const { userId } = req.body;
     if (!userId) throw "Incomplete data";
     const request = await AuthorRequest.findOne({ userId: userId });
@@ -193,8 +55,6 @@ usersCtrl.addAuthor = async (req, res, next) => {
 
 usersCtrl.getAllUsers = async (req, res) => {
   try {
-    if (req.user.role != 2) throw "You do not have the required permissions";
-
     const user = await User.find({ role: 0 }).select([
       "firstName",
       "lastName",
@@ -222,8 +82,6 @@ usersCtrl.getAllUsers = async (req, res) => {
 
 usersCtrl.getAllAuthors = async (req, res) => {
   try {
-    if (req.user.role != 2) throw "You do not have the required permissions";
-
     const author = await User.find({ role: 1 }).select([
       "firstName",
       "lastName",
@@ -250,8 +108,6 @@ usersCtrl.getAllAuthors = async (req, res) => {
 
 usersCtrl.addPublicationToAuthor = async (req, res, next) => {
   try {
-    if (req.user.role != 1) throw "You do not have the required permissions";
-
     var user = await User.findById(req.user.id);
     user.myPublications.push(req.body.publicationId);
     await User.findByIdAndUpdate(req.user.id, user);

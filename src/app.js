@@ -1,9 +1,9 @@
 const session = require("express-session");
-const passport = require("passport");
 const express = require("express"); // Framework
 const morgan = require("morgan"); // Show browser requests
-const loggerHandler = require("./log/facadeLogger");
 const cors = require("cors");
+
+const loggerHandler = require("./log/facadeLogger");
 
 const userRoutes = require("./routes/user");
 const sessionRoutes = require("./routes/session");
@@ -58,8 +58,6 @@ app.use(
     saveUninitialized: true,
   })
 );
-app.use(passport.initialize());
-app.use(passport.session());
 
 // Routes
 app.use("/user", userRoutes);

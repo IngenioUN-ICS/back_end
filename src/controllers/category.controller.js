@@ -7,8 +7,6 @@ const categoriesCtrl = {};
 // Only the administrator can use this function
 categoriesCtrl.addCategory = async (req, res) => {
   try {
-    if (req.user.role != 2) throw "You do not have the required permissions";
-
     const { name, description } = req.body;
     if (!name || !description) throw "The required data is incomplete";
 
@@ -60,7 +58,6 @@ categoriesCtrl.getCategories = async (req, res) => {
 
 categoriesCtrl.updatePublications = async (req, res, next) => {
   try {
-    if (req.user.role != 1) throw "You do not have the required permissions";
     var categorie;
     for (var i = 0; i < req.body.listCategories.length; i++) {
       categorie = await Category.findById(req.body.listCategories[i]);

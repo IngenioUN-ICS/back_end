@@ -72,7 +72,6 @@ notificationCtrl.unsubscribe = async (req, res) => {
 notificationCtrl.updateNotifications = async (req, res, next) => {
   try {
     var i, j;
-    if (req.user.role != 1) throw "You do not have the required permissions";
     var notifications = await Notification.find({ authorId: req.user.id });
 
     if (notifications) {
@@ -236,13 +235,6 @@ notificationCtrl.getAllNotifications = async (req, res, next) => {
 
 notificationCtrl.createSubscribers = async (req, res) => {
   try {
-    if (req.user.role != 2) {
-      logger.warn("The user does not have the required permissions");
-      return res.status(401).json({
-        message: "You do not have the required permissions",
-      });
-    }
-
     var newNotification;
 
     for (var i = 0; i < req.body.followers.length; i++) {

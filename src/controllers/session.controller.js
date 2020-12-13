@@ -17,10 +17,13 @@ sessionCtrl.signUp = async (req, res) => {
       roles,
     } = req.body;
 
+    // checking data
     if (!firstName || !lastName || !email1 || !password || !confirmPassword)
       return res.status(400).json({ message: "Incomplete data" });
 
     const newUser = new User(req.body);
+
+    // checking data structure
     const checkEmail = newUser.emailIsValid(email1);
     const checkPassword = newUser.passwordIsValid(password);
 
@@ -50,11 +53,9 @@ sessionCtrl.signUp = async (req, res) => {
     const token = jwt.sign({ id: newUser._id }, config.SECRET, {
       expiresIn: 86400, // 24 hours
     });
-    console.log(token);
 
     // Saving the User Object in Mongodb
     const savedUser = await newUser.save();
-    console.log(savedUser);
 
     return res.status(200).json({ token });
   } catch (error) {
@@ -63,7 +64,7 @@ sessionCtrl.signUp = async (req, res) => {
   }
 };
 
-sessionCtrl.signin = async (req, res) => {
+sessionCtrl.signIn = async (req, res) => {
   try {
     // Request body email can be an email or username
     const userFound = await User.findOne({ email1: req.body.email1 }).populate(
@@ -88,6 +89,17 @@ sessionCtrl.signin = async (req, res) => {
     });
 
     res.json({ token });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+};
+
+sessionCtrl.signOut = (req, res) => {
+  try {
+    // complete: delete token from memmemory or BlackList
+    console.log(req.headers["x-access-token"]);
+    return res.status(200).json({ message: "Bye" });
   } catch (error) {
     console.log(error);
   }

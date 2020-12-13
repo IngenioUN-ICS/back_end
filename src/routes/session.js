@@ -3,6 +3,7 @@ const router = Router();
 
 const sessionCtrl = require("../controllers/session.controller");
 const checker = require("../middlewares/verifySignUp");
+const authentication = require("../middlewares/authJwt");
 
 router.use((req, res, next) => {
   res.header(
@@ -18,6 +19,8 @@ router.post(
   sessionCtrl.signUp
 );
 
-router.post("/signin", sessionCtrl.signin);
+router.post("/signin", sessionCtrl.signIn);
+
+router.get("/signout", authentication.verifyToken, sessionCtrl.signOut);
 
 module.exports = router;

@@ -8,8 +8,6 @@ const publicationsCtrl = {};
 
 publicationsCtrl.addPublication = async (req, res, next) => {
   try {
-    if (req.user.role != 1) throw "You do not have the required permissions";
-
     const { title, abstract, keyWords, text, listCategories } = req.body;
     if (!title || !abstract || !keyWords || !text || !listCategories)
       throw "The required data is incomplete";

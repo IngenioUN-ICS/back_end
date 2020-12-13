@@ -42,8 +42,6 @@ authorRequestCtrl.addAuthorRequest = async (req, res) => {
 
 authorRequestCtrl.getAllAuthorRequest = async (req, res) => {
   try {
-    if (req.user.role != 2) throw "You do not have the required permissions";
-
     const authorRequest = await AuthorRequest.find()
       .populate({
         path: "userId",
@@ -72,8 +70,6 @@ authorRequestCtrl.getAllAuthorRequest = async (req, res) => {
 
 authorRequestCtrl.getAuthorRequest = async (req, res) => {
   try {
-    if (req.user.role != 2) throw "You do not have the required permissions";
-
     const userId = req.params.userId;
     if (!userId) throw "The required data is incomplete";
 
@@ -98,8 +94,6 @@ authorRequestCtrl.getAuthorRequest = async (req, res) => {
 
 authorRequestCtrl.removeAuthorRequest = async (req, res) => {
   try {
-    if (req.user.role != 2) throw "You do not have the required permissions";
-
     const userId = req.body.userId;
     if (!userId) throw "The required data is incomplete";
 

@@ -1,15 +1,15 @@
 const { Router } = require("express");
 const router = Router();
 
-const {
-  getCategories,
-  addCategory,
-} = require("../controllers/category.controller");
+const authentication = require("../middlewares/authJwt");
+const categoryCtrl = require("../controllers/category.controller");
 
-router.route("/get-all-categories").get(getCategories);
+router.get("/get-all-categories", categoryCtrl.getCategories);
 
-const { isAuthenticated } = require("../helpers/authenticated");
-
-router.route("/add-category").post(isAuthenticated, addCategory);
+router.post(
+  "/add-category",
+  [authentication.verifyToken, authentication.isAdmin],
+  categoryCtrl.addCategory
+);
 
 module.exports = router;

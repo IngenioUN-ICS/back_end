@@ -3,7 +3,10 @@ const config = require("../config");
 const User = require("../models/User");
 const Role = require("../models/Role");
 
-export const verifyToken = async (req, res, next) => {
+const authenticatorCrtl = {};
+
+authenticatorCrtl.verifyToken = async (req, res, next) => {
+  console.log(req.headers);
   let token = req.headers["x-access-token"];
 
   if (!token) return res.status(403).json({ message: "No token provided" });
@@ -21,7 +24,7 @@ export const verifyToken = async (req, res, next) => {
   }
 };
 
-export const isAdmin = async (req, res, next) => {
+authenticatorCrtl.isAdmin = async (req, res, next) => {
   try {
     const user = await User.findById(req.userId);
     const roles = await Role.find({ _id: { $in: user.roles } });
@@ -40,7 +43,7 @@ export const isAdmin = async (req, res, next) => {
   }
 };
 
-export const isAuthor = async (req, res, next) => {
+authenticatorCrtl.isAuthor = async (req, res, next) => {
   try {
     const user = await User.findById(req.userId);
     const roles = await Role.find({ _id: { $in: user.roles } });
@@ -59,7 +62,7 @@ export const isAuthor = async (req, res, next) => {
   }
 };
 
-export const isUser = async (req, res, next) => {
+authenticatorCrtl.isUser = async (req, res, next) => {
   try {
     const user = await User.findById(req.userId);
     const roles = await Role.find({ _id: { $in: user.roles } });
@@ -77,3 +80,5 @@ export const isUser = async (req, res, next) => {
     return res.status(500).send({ message: error });
   }
 };
+
+module.exports = authenticatorCrtl;
