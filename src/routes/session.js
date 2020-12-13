@@ -1,15 +1,23 @@
 const { Router } = require("express");
-const passport = require("passport");
 const router = Router();
 
-const { signup, signin, signout } = require("../controllers/user.controller");
+const sessionCtrl = require("../controllers/user.controller");
+const checker = require("../middlewares/verifySignUp")
 
-const { isLogged, isAuthenticated } = require("../helpers/authenticated");
+router.use((req, res, next) => {
+  res.header(
+    "Access-Control-Allow-Headers",
+    "x-access-token, Origin, Content-Type, Accept"
+  );
+  next();
+});
 
-router.route("/signup").post(isLogged, signup);
+router.post(
+  "/signup",
+  [checker.checkDuplicateEmail , checker.checkRolesExisted],
+  sessionCtrl.signUp
+);
 
-router.route("/signin").post(isLogged, signin);
-
-router.route("/signout").get(isAuthenticated, signout);
+router.post("/signin", sessionCtrl.signin);
 
 module.exports = router;

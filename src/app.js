@@ -5,8 +5,13 @@ const morgan = require("morgan"); // Show browser requests
 const loggerHandler = require("./log/facadeLogger");
 const cors = require("cors");
 
+const { createRoles, createAdmin } = require("./libs/initialSetUp");
+
 require("./config/passport");
+
 const app = express();
+createRoles();
+createAdmin();
 
 // Settings
 app.set("port", process.env.PORT || 3000);
