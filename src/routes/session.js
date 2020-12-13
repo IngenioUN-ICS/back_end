@@ -1,8 +1,8 @@
 const { Router } = require("express");
 const router = Router();
 
-const sessionCtrl = require("../controllers/user.controller");
-const checker = require("../middlewares/verifySignUp")
+const sessionCtrl = require("../controllers/session.controller");
+const checker = require("../middlewares/verifySignUp");
 
 router.use((req, res, next) => {
   res.header(
@@ -14,7 +14,7 @@ router.use((req, res, next) => {
 
 router.post(
   "/signup",
-  [checker.checkDuplicateEmail , checker.checkRolesExisted],
+  [checker.checkDuplicateEmail, checker.checkRolesExisted],
   sessionCtrl.signUp
 );
 

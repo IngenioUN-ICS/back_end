@@ -5,6 +5,13 @@ const morgan = require("morgan"); // Show browser requests
 const loggerHandler = require("./log/facadeLogger");
 const cors = require("cors");
 
+const userRoutes = require("./routes/user");
+const sessionRoutes = require("./routes/session");
+const categoryRoutes = require("./routes/category");
+const publicationRoutes = require("./routes/publication");
+const notificationRoutes = require("./routes/notification");
+const authorRequestRoutes = require("./routes/authorRequest");
+
 const { createRoles, createAdmin } = require("./libs/initialSetUp");
 
 require("./config/passport");
@@ -55,11 +62,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Routes
-app.use("/session", require("./routes/session"));
-app.use("/user", require("./routes/user"));
-app.use("/author-request", require("./routes/authorRequest"));
-app.use("/publication", require("./routes/publication"));
-app.use("/category", require("./routes/category"));
-app.use("/notification", require("./routes/notification"));
+app.use("/user", userRoutes);
+app.use("/session", sessionRoutes);
+app.use("/category", categoryRoutes);
+app.use("/publication", publicationRoutes);
+app.use("/notification", notificationRoutes);
+app.use("/author-request", authorRequestRoutes);
 
 module.exports = app;

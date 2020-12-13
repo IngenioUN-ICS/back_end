@@ -6,7 +6,6 @@ const notificationCtrl = {};
 notificationCtrl.subscribe = async (req, res) => {
   try {
     if (req.user.role == 2) throw "You do not have the required permissions";
-    console.log(req.body);
     const newNotification = new Notification(req.body);
     newNotification.userId = req.user.id;
     await newNotification.save();
