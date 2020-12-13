@@ -6,7 +6,7 @@ const authentication = require("../middlewares/authJwt");
 
 router.post(
   "/add-author-request",
-  authentication.verifyToken,
+  [authentication.verifyToken, authentication.isAuthor],
   authReqqCtrl.addAuthorRequest
 );
 

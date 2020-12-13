@@ -5,8 +5,6 @@ const authorRequestCtrl = {};
 
 authorRequestCtrl.addAuthorRequest = async (req, res) => {
   try {
-    if (req.user.role != 0) throw "You do not have the required permissions";
-
     var authorRequest = await AuthorRequest.findOne({ userId: req.user.id });
     if (authorRequest) throw "You have already send an author request";
 

@@ -2,6 +2,7 @@ const User = require("../models/User");
 const logger = require("../log/facadeLogger");
 const Category = require("../models/Category");
 const AuthorRequest = require("../models/AuthorRequest");
+const authentication = require("../middlewares/authJwt");
 
 const usersCtrl = {};
 
@@ -14,7 +15,8 @@ usersCtrl.addAuthor = async (req, res, next) => {
     if (!request) throw "No exist request";
     var user = await User.findById(userId);
     if (!user) throw "no exits";
-    if (user.role == 1) throw "You are already an author";
+
+    if (user.roles.includes("author")) throw "You are already an author";
 
     var user2;
     for (var i = 0; i < user.followers.length; i++) {
@@ -30,7 +32,8 @@ usersCtrl.addAuthor = async (req, res, next) => {
       await User.findByIdAndUpdate(user2.id, user2);
     }
 
-    user.role = 1;
+    user.roles.push("author");
+    user.roles = user.roles.filter(e => e !== "user");
     user.email2 = request.email2;
     user.professionalCard = request.professionalCard;
     user.employmentHistory = request.employmentHistory;
@@ -110,13 +113,14 @@ usersCtrl.addPublicationToAuthor = async (req, res, next) => {
   try {
     var user = await User.findById(req.user.id);
     user.myPublications.push(req.body.publicationId);
-    await User.findByIdAndUpdate(req.user.id, user);
+    await User.findByIdAndUpdate(user.id, user);
     return next();
   } catch (err) {
     if (!err.message) {
       logger.warn(err);
       return res.status(400).json({ message: err });
     } else {
+      console.log(err);
       logger.error("There is a problem adding the post to the author list");
       return res.status(400).json({
         message: "There is a problem adding the post to your post list",
@@ -127,8 +131,6 @@ usersCtrl.addPublicationToAuthor = async (req, res, next) => {
 
 usersCtrl.addMySavePublications = async (req, res) => {
   try {
-    if (req.user.role == 2) throw "You do not have the required permissions";
-
     var user = await User.findById(req.user.id);
     for (var i = 0; i < user.savedPublications.length; i++) {
       if (req.body.publicationId == user.savedPublications[i])
@@ -151,8 +153,6 @@ usersCtrl.addMySavePublications = async (req, res) => {
 
 usersCtrl.getAllSavedPublications = async (req, res) => {
   try {
-    if (req.user.role == 2) throw "You do not have the required permissions";
-
     const user = await User.findById(req.user.id)
       .populate({
         path: "savedPublications",
@@ -180,7 +180,6 @@ usersCtrl.getAllSavedPublications = async (req, res) => {
 
 usersCtrl.getAllUserCategories = async (req, res) => {
   try {
-    if (req.user.role == 2) throw "You do not have the required permissions";
     var categories;
     if (req.params.userId != "null")
       categories = await User.findById(req.params.userId).select(
@@ -223,7 +222,6 @@ usersCtrl.getAllUserCategories = async (req, res) => {
 
 usersCtrl.getAllFollowings = async (req, res) => {
   try {
-    if (req.user.role == 2) throw "You do not have the required permissions";
     var followings;
     if (req.params.userId != "null")
       followings = await User.findById(req.params.userId).select("following");
@@ -271,7 +269,6 @@ usersCtrl.getAllFollowings = async (req, res) => {
 
 usersCtrl.getAllFollowers = async (req, res) => {
   try {
-    if (req.user.role == 2) throw "You do not have the required permissions";
     var followers;
     if (req.params.userId != "null")
       followers = await User.findById(req.params.userId).select("followers");
@@ -319,8 +316,6 @@ usersCtrl.getAllFollowers = async (req, res) => {
 
 usersCtrl.getAllUserAuthors = async (req, res) => {
   try {
-    if (req.user.role == 2) throw "You do not have the required permissions";
-
     var authors;
     if (req.params.userId != "null")
       authors = await User.findById(req.params.userId).select(
@@ -409,11 +404,9 @@ usersCtrl.getPersonalData = async (req, res) => {
     var user = await User.findById(tempId);
 
     if (req.params.userId != "null") {
-      if (user.role == 2) throw "You cannot see the data of this user";
-
       const userLoggedIn = await User.findById(req.user.id);
 
-      if (user.role == 0)
+      if (user.roles.includes("user"))
         isFollowing = userLoggedIn.following.includes(user.id);
       else isFollowing = userLoggedIn.subscriptionToAuthors.includes(user.id);
 
@@ -424,7 +417,8 @@ usersCtrl.getPersonalData = async (req, res) => {
     logger.info("The required data has been successfully obtained");
     return res.status(200).json({
       id: user.id,
-      role: user.role,
+      // ! check
+      role: user.roles,
       firstName: user.firstName,
       lastName: user.lastName,
       email1: user.email1,
@@ -446,8 +440,6 @@ usersCtrl.getPersonalData = async (req, res) => {
 
 usersCtrl.startFollowing = async (req, res, next) => {
   try {
-    if (req.user.role == 2) throw "You do not have the required permissions";
-
     const user = await User.findById(req.user.id);
 
     if (req.body.categoryId) {
@@ -467,7 +459,6 @@ usersCtrl.startFollowing = async (req, res, next) => {
         throw "You can't subscribe to yourself";
 
       const tempUser = await User.findById(req.body.authorId);
-      if (tempUser.role == 2) throw "You cannot subscribe to this user";
 
       user.subscriptionToAuthors.push(req.body.authorId);
       await User.findByIdAndUpdate(req.user.id, user);
@@ -478,10 +469,6 @@ usersCtrl.startFollowing = async (req, res, next) => {
         throw "You are already following this user";
 
       if (req.body.userId == req.user.id) throw "You can't follow yourself";
-
-      const tempUser = await User.findById(req.body.userId);
-      if (tempUser.role == 2 || tempUser.role == 1)
-        throw "You cannot subscribe to this user";
 
       user.following.push(req.body.userId);
       await User.findByIdAndUpdate(req.user.id, user);
@@ -517,8 +504,6 @@ usersCtrl.startFollowing = async (req, res, next) => {
 
 usersCtrl.stopFollowing = async (req, res, next) => {
   try {
-    if (req.user.role == 2) throw "You do not have the required permissions";
-
     const user = await User.findById(req.user.id);
     var i = 0;
     if (req.body.authorId) {
@@ -621,7 +606,7 @@ usersCtrl.getRandomUsers = async (req, res) => {
     }
 
     if (users.length < 10) {
-      if (req.isAuthenticated()) {
+      if (authentication.verifyToken()) {
         userLoggedIn = await User.findById(req.user.id);
         console.log(userLoggedIn);
         for (let i = 0; i < users.length; i++) {
@@ -641,7 +626,7 @@ usersCtrl.getRandomUsers = async (req, res) => {
     } else {
       while (response.length < 10) {
         random = Math.floor(Math.random() * users.length);
-        if (req.isAuthenticated()) {
+        if (authentication.verifyToken()) {
           userLoggedIn = await User.findById(req.user.id);
           if (req.params.role == 0)
             isFollowing = userLoggedIn.following.includes(users[random]._id);

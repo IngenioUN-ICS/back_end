@@ -13,7 +13,6 @@ const User = new Schema(
     professionalCard: { type: String, required: false },
     employmentHistory: { type: String, required: false },
     academicHistory: { type: String, required: false },
-    role: { type: Number, default: 0 },
     roles: [{ type: Schema.Types.ObjectId, ref: "Role" }],
     followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
     following: [{ type: Schema.Types.ObjectId, ref: "User" }],

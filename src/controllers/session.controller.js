@@ -95,6 +95,7 @@ sessionCtrl.signIn = async (req, res) => {
   }
 };
 
+// ! check
 sessionCtrl.signOut = (req, res) => {
   try {
     // complete: delete token from memmemory or BlackList

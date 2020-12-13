@@ -6,16 +6,15 @@ const Role = require("../models/Role");
 const authenticatorCrtl = {};
 
 authenticatorCrtl.verifyToken = async (req, res, next) => {
-  console.log(req.headers);
-  let token = req.headers["x-access-token"];
-
-  if (!token) return res.status(403).json({ message: "No token provided" });
-
   try {
-    const decoded = jwt.verify(token, config.SECRET);
-    req.userId = decoded.id;
+    let token = req.headers["x-access-token"];
 
-    const user = await User.findById(req.userId, { password: 0 });
+    if (!token) return res.status(403).json({ message: "No token provided" });
+    const decoded = jwt.verify(token, config.SECRET);
+    req.user = {};
+    req.user.id = decoded.id;
+
+    const user = await User.findById(req.user.id, { password: 0 });
     if (!user) return res.status(404).json({ message: "No user found" });
 
     next();
@@ -24,9 +23,13 @@ authenticatorCrtl.verifyToken = async (req, res, next) => {
   }
 };
 
+authenticatorCrtl.isAuthenticated = (req, res, next) => {
+  return req.headers["x-access-token"] ? true : false;
+};
+
 authenticatorCrtl.isAdmin = async (req, res, next) => {
   try {
-    const user = await User.findById(req.userId);
+    const user = await User.findById(req.user.id);
     const roles = await Role.find({ _id: { $in: user.roles } });
 
     for (let i = 0; i < roles.length; i++) {
@@ -45,7 +48,7 @@ authenticatorCrtl.isAdmin = async (req, res, next) => {
 
 authenticatorCrtl.isAuthor = async (req, res, next) => {
   try {
-    const user = await User.findById(req.userId);
+    const user = await User.findById(req.user.id);
     const roles = await Role.find({ _id: { $in: user.roles } });
 
     for (let i = 0; i < roles.length; i++) {
@@ -64,7 +67,7 @@ authenticatorCrtl.isAuthor = async (req, res, next) => {
 
 authenticatorCrtl.isUser = async (req, res, next) => {
   try {
-    const user = await User.findById(req.userId);
+    const user = await User.findById(req.user.id);
     const roles = await Role.find({ _id: { $in: user.roles } });
 
     for (let i = 0; i < roles.length; i++) {

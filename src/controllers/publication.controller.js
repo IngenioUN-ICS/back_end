@@ -19,6 +19,7 @@ publicationsCtrl.addPublication = async (req, res, next) => {
     req.body.publicationId = newPublication.id;
     return next();
   } catch (err) {
+    console.log(err);
     if (!err.message) {
       logger.warn(err);
       return res.status(400).json({ message: err });

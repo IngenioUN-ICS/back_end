@@ -1,6 +1,7 @@
 const Category = require("../models/Category");
 const User = require("../models/User");
 const logger = require("../log/facadeLogger");
+const authentication = require("../middlewares/authJwt");
 
 const categoriesCtrl = {};
 
@@ -40,7 +41,7 @@ categoriesCtrl.getCategories = async (req, res) => {
         publications: 1,
       }
     ).lean();
-    if (req.isAuthenticated()) {
+    if (authentication.isAuthenticated(req)) {
       var user = await User.findById(req.user.id);
       for (var i = 0; i < categories.length; i++) {
         if (user.subscriptionToCategories.includes(categories[i]._id))

@@ -5,7 +5,6 @@ const notificationCtrl = {};
 
 notificationCtrl.subscribe = async (req, res) => {
   try {
-    if (req.user.role == 2) throw "You do not have the required permissions";
     const newNotification = new Notification(req.body);
     newNotification.userId = req.user.id;
     await newNotification.save();
@@ -32,8 +31,6 @@ notificationCtrl.subscribe = async (req, res) => {
 
 notificationCtrl.unsubscribe = async (req, res) => {
   try {
-    if (req.user.role == 2) throw "You do not have the required permissions";
-
     if (req.body.categoryId)
       await Notification.findOneAndRemove({
         categoryId: req.body.categoryId,
@@ -114,8 +111,6 @@ notificationCtrl.updateNotifications = async (req, res, next) => {
 
 notificationCtrl.removeNotification = async (req, res) => {
   try {
-    if (req.user.role == 2) throw "You do not have the required permissions";
-
     if (req.body.notificationId)
       if (req.body.publicationId) {
         const notification = await Notification.findById(
@@ -150,8 +145,6 @@ notificationCtrl.removeNotification = async (req, res) => {
 
 notificationCtrl.removeAllNotifications = async (req, res) => {
   try {
-    if (req.user.role == 2) throw "You do not have the required permissions";
-
     if (req.body.notificationId)
       var notification = await Notification.findById(req.body.notificationId);
     else throw "Incomplete data";
@@ -177,8 +170,6 @@ notificationCtrl.removeAllNotifications = async (req, res) => {
 notificationCtrl.getAllNotifications = async (req, res, next) => {
   try {
     var notification;
-    if (req.user.role == 2) throw "You do not have the required permissions";
-
     if (req.params.authorId != "null") {
       notification = await Notification.findOne(
         {
