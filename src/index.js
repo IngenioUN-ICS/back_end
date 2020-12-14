@@ -2,6 +2,7 @@ const app = require('./app')
 const fs = require('fs')
 const path = require('path')
 const https = require('https')
+const { ppid } = require('process')
 
 require('./database')
 
@@ -23,7 +24,8 @@ const httpsServer = https.createServer(
   },
   app
 )
-httpsServer.listen(3443, () => console.log('Server running at port 3443'))
+httpsServer.listen(3443, () => console.log('HTTPS Server running at port 3443'))
+app.listen(3000, () => console.log('HTTP Server running at port 3000'))
 
 // const port = 3443
 // https.createServer(httpsOptions, app).listen(port, function () {
