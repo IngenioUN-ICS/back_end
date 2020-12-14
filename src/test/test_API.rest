@@ -1,5 +1,5 @@
 @url = http://localhost:3000
-@tokenUsr = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmZDcxMGQ3Y2JlZjk3MDBjNDUyOWY3ZSIsImlhdCI6MTYwNzk2MTU2MSwiZXhwIjoxNjA4MDQ3OTYxfQ.9zHeVEAGRqZLc1NeDwbXcJXT2StJ3tStt6oKcXTi01s
+@tokenUsr = delete
 @tokenAdmin = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmZDY3OTRiZDhkMTE1MjU3ZmJkYjg1ZSIsImlhdCI6MTYwNzk2MTYwNywiZXhwIjoxNjA4MDQ4MDA3fQ.JejGlkhCoWk1zC06UtyWoYSu6MADw_emDgvNv_bktxQ
 @tokenAuthor = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmZDY3YTE3ZDhkMTE1MjU3ZmJkYjg2MCIsImlhdCI6MTYwNzk2MzY1MywiZXhwIjoxNjA4MDUwMDUzfQ.cdHmNpvua5xymCwaF6NqsIXTlbfkLSdpq-p6f1n42BA
 
@@ -57,7 +57,9 @@ content-type: application/json
 }
 
 
-// ### SignOut
+### SignOut
+GET {{url}}/session/signout HTTP/1.1
+x-access-token: {{tokenUsr}}
 
 // ---------------------- Category ------------------------
 
