@@ -26,7 +26,7 @@ const httpsServer = https.createServer(
 httpsServer.listen(3443, () => console.log('Server running at port 3443'))
 
 // const port = 3443
-// https.createServer(httpsOptions, app).listen(port, function(){
+// https.createServer(httpsOptions, app).listen(port, function () {
 //   console.log(`Server is running at port ${port}`)
 // })
 
