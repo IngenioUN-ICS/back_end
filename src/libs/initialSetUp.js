@@ -13,7 +13,7 @@ initializer.createRoles = async () => {
     if (count > 0) return;
 
     // Create default Roles
-    const values = await Promise.all([
+    await Promise.all([
       new Role({ name: "user" }).save(),
       new Role({ name: "author" }).save(),
       new Role({ name: "administrator" }).save(),

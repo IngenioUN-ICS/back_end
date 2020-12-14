@@ -54,9 +54,6 @@ sessionCtrl.signUp = async (req, res) => {
       expiresIn: 86400, // 24 hours
     });
 
-    // Saving the User Object in Mongodb
-    const savedUser = await newUser.save();
-
     return res.status(200).json({ token });
   } catch (error) {
     console.log(error);
@@ -98,11 +95,11 @@ sessionCtrl.signIn = async (req, res) => {
 // ! check
 sessionCtrl.signOut = (req, res) => {
   try {
-    // complete: delete token from memmemory or BlackList
-    console.log(req.headers["x-access-token"]);
-    return res.status(200).json({ message: "Bye" });
+    // TODO: complete - delete token from memmemory or use BlackList
+    return res.status(200).json({ token: "deleted", message: "Bye" });
   } catch (error) {
     console.log(error);
+    //return res.status(400).json(error);
   }
 };
 

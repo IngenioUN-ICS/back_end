@@ -24,7 +24,28 @@ authenticatorCrtl.verifyToken = async (req, res, next) => {
 };
 
 authenticatorCrtl.isAuthenticated = (req, res, next) => {
+  // TODO: to get better
   return req.headers["x-access-token"] ? true : false;
+};
+
+authenticatorCrtl.notLogged = async (req, res, next) => {
+  try {
+    let token = req.headers["x-access-token"];
+
+    if (!token) return next();
+
+    jwt.verify(token, config.SECRET, (err, next) => {
+      if (err) throw err;
+    });
+    const decoded = jwt.verify(token, config.SECRET);
+    const user = await User.findById(decoded.id, { password: 0 });
+    if (user)
+      return res.status(404).json({ message: "You are already logged in" });
+
+    next();
+  } catch (error) {
+    return res.status(401).json({ error });
+  }
 };
 
 authenticatorCrtl.isAdmin = async (req, res, next) => {

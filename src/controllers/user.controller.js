@@ -3,6 +3,7 @@ const logger = require("../log/facadeLogger");
 const Category = require("../models/Category");
 const AuthorRequest = require("../models/AuthorRequest");
 const authentication = require("../middlewares/authJwt");
+const Role = require("../models/Role");
 
 const usersCtrl = {};
 
@@ -16,7 +17,11 @@ usersCtrl.addAuthor = async (req, res, next) => {
     var user = await User.findById(userId);
     if (!user) throw "no exits";
 
-    if (user.roles.includes("author")) throw "You are already an author";
+    const roleAuthor = await Role.findOne({name: "author"});
+
+    const roleUser = await Role.findOne({name: "user"});
+
+    if (user.roles.includes( roleAuthor._id)) throw "You are already an author";
 
     var user2;
     for (var i = 0; i < user.followers.length; i++) {
@@ -32,8 +37,8 @@ usersCtrl.addAuthor = async (req, res, next) => {
       await User.findByIdAndUpdate(user2.id, user2);
     }
 
-    user.roles.push("author");
-    user.roles = user.roles.filter((e) => e !== "user");
+    user.roles.push(roleAuthor._id);
+    user.roles = user.roles.filter((e) => e !== roleUser._id);
     user.email2 = request.email2;
     user.professionalCard = request.professionalCard;
     user.employmentHistory = request.employmentHistory;
@@ -58,7 +63,9 @@ usersCtrl.addAuthor = async (req, res, next) => {
 
 usersCtrl.getAllUsers = async (req, res) => {
   try {
-    const user = await User.find(populate( {path: "roles", select:[{name : "user"} ]})).select([
+    const roleUser = await Role.findOne({name: "user"});
+
+    const user = await User.find({ roles: roleUser._id }).select([
       "firstName",
       "lastName",
       "email1",
@@ -86,7 +93,9 @@ usersCtrl.getAllUsers = async (req, res) => {
 
 usersCtrl.getAllAuthors = async (req, res) => {
   try {
-    const author = await User.find({ roles: "author" }).select([
+    const roleAuthor = await Role.findOne({name: "author"});
+
+    const author = await User.find({ roles: roleAuthor }).select([
       "firstName",
       "lastName",
       "myPublications",
@@ -379,7 +388,8 @@ usersCtrl.getAuthorPublications = async (req, res) => {
       },
     });
 
-    if (!author.roles.includes("author")) throw "This user is not an author";
+    const roleAuthor = await Role.findOne({name: "author"});
+    if (!author.roles.includes(roleAuthor._id)) throw "This user is not an author";
 
     return res.status(200).json(author.myPublications);
   } catch (err) {
@@ -458,8 +468,6 @@ usersCtrl.startFollowing = async (req, res, next) => {
 
       if (req.body.authorId == req.user.id)
         throw "You can't subscribe to yourself";
-
-      const tempUser = await User.findById(req.body.authorId);
 
       user.subscriptionToAuthors.push(req.body.authorId);
       await User.findByIdAndUpdate(req.user.id, user);
