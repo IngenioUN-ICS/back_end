@@ -1,5 +1,5 @@
 @url = http://localhost:3000
-@tokenUsr = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmZDY3OTRiZDhkMTE1MjU3ZmJkYjg1ZSIsImlhdCI6MTYwNzk0ODU2OSwiZXhwIjoxNjA4MDM0OTY5fQ.D9_cTWV4fp3pTld-Hx95prNjJYCdkGw0C1PcXZQRzIA
+@tokenUsr = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmZDcxMGQ3Y2JlZjk3MDBjNDUyOWY3ZSIsImlhdCI6MTYwNzk1Mjk1NCwiZXhwIjoxNjA4MDM5MzU0fQ.6-uxY_PGgDZwLV9xRm4XMrpOdu0eHgOSPHWSIBO42sY
 @tokenAdmin = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmZDY3OTRiZDhkMTE1MjU3ZmJkYjg1ZSIsImlhdCI6MTYwNzk0ODU2OSwiZXhwIjoxNjA4MDM0OTY5fQ.D9_cTWV4fp3pTld-Hx95prNjJYCdkGw0C1PcXZQRzIA
 @tokenAuthor = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmZDY3YTE3ZDhkMTE1MjU3ZmJkYjg2MCIsImlhdCI6MTYwNzk1MDAxMCwiZXhwIjoxNjA4MDM2NDEwfQ.J7BQ3lOOtWyclI2FDiNlHljcoRoFPn3z_y-rpLsNLA0
 
@@ -24,9 +24,9 @@ content-type: application/json
 {
   "firstName": "author",
   "lastName": "author",
-  "email1": "author00@ingenio.com",
+  "email1": "author01@ingenio.com",
   "password": "Author@123",
-  "confirmPassword": "User@123"
+  "confirmPassword": "Author@123"
 }
 
 ### SignIn - User
@@ -88,7 +88,7 @@ content-type: application/json
 x-access-token: {{tokenAuthor}}
 
 {
-	"title": "Esta es de Sistemas <3 de otro autor",
+	"title": "Esta es de Sistemas <3 de otro autor segunda",
 	"abstract": "auctualizo tabla users",
 	"keyWords": ["hola", "Mecatrónica"],
 	"text": "Había una vez ....",
@@ -97,20 +97,29 @@ x-access-token: {{tokenAuthor}}
 
 // ---------------------- Notification ------------------------
 
-### get notification
-Get {{url}}/notification/get-notifications/:authorId/:categoryId HTTP/1.1
+### get all notification
+Get {{url}}/notification/get-notifications HTTP/1.1
 content-type: application/json
 x-access-token: {{tokenUsr}}
 
 ### remove notification
-DELETE {{url}}/notification/remove-notification HTTP/1.1
+POST  {{url}}/notification/remove-notification HTTP/1.1
 content-type: application/json
 x-access-token: {{tokenUsr}}
 
+{
+  "notificationId": "5fd7701cb6d7101b80c281fd",
+  "publicationId": "5fd7717cb6d7101b80c281ff"
+}
+
 ### remove all notifications
-DELETE {{url}}/notification/remove-all-notifications HTTP/1.1
+POST  {{url}}/notification/remove-all-notifications HTTP/1.1
 content-type: application/json
 x-access-token: {{tokenUsr}}
+
+{
+  "notificationId": "5fd7701cb6d7101b80c281fd"
+}
 
 // ---------------------- AuthorRequest ------------------------
 ### add authorRequest
@@ -147,17 +156,23 @@ content-type: application/json
 
 ### get user categories by userId
 GET {{url}}/user/get-user-categories/:userId HTTP/1.1
+x-access-token: {{tokenUsr}}
+content-type: application/json
 
 ### get use following by userId
 GET {{url}}/user/get-following/:userId HTTP/1.1
-
+x-access-token: {{tokenUsr}}
+content-type: application/json
 
 ### get use authors by userId
 GET {{url}}/user/get-user-authors/:userId HTTP/1.1
+x-access-token: {{tokenUsr}}
+content-type: application/json
 
 ### get use followers by userId
 GET {{url}}/user/get-followers/:userId HTTP/1.1
-
+x-access-token: {{tokenUsr}}
+content-type: application/json
 
 ### update role : common user to author 
 put {{url}}/user/add-author HTTP/1.1
@@ -204,10 +219,20 @@ POST {{url}}/user/start-following HTTP/1.1
 x-access-token: {{tokenUsr}}
 content-type: application/json
 
+{
+  //"categoryId": "5fd6796fd8d115257fbdb85f", 
+  "authorId": "5fd67a17d8d115257fbdb860"
+}
+
 ### stop follow
 POST {{url}}/user/stop-following HTTP/1.1
 x-access-token: {{tokenUsr}}
 content-type: application/json
+
+{
+  //"categoryId": "5fd6796fd8d115257fbdb85f", 
+  "authorId": "5fd67a17d8d115257fbdb860"
+}
 
 ### get author publications
 GET {{url}}/user/get-author-publications/5fd67a17d8d115257fbdb860 HTTP/1.1

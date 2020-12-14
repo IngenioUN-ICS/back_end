@@ -5,7 +5,8 @@ const notificationCtrl = require("../controllers/notification.controller");
 const authentication = require("../middlewares/authJwt");
 
 router.get(
-  "/get-notifications/:authorId/:categoryId",
+ // "/get-notifications/:authorId/:categoryId",
+  "/get-notifications",
   authentication.verifyToken,
   notificationCtrl.getAllNotifications
 );
@@ -16,7 +17,7 @@ router.post(
   notificationCtrl.removeNotification
 );
 
-router.route(
+router.post(
   "/remove-all-notifications",
   authentication.verifyToken,
   notificationCtrl.removeAllNotifications
