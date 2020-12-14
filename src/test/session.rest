@@ -1,0 +1,28 @@
+@url = http://localhost:3000
+// ---------------------- Session ------------------------
+
+### SignUp - User
+POST {{url}}/session/signup HTTP/1.1
+content-type: application/json
+
+{
+  "firstName": "user",
+  "lastName": "user",
+  "email1": "user00@ingenio.com",
+  "password": "User@123",
+  "confirmPassword": "User@123"
+}
+
+### SignUp - Author
+POST {{url}}/session/signup HTTP/1.1
+content-type: application/json
+
+{
+  "firstName": "author",
+  "lastName": "author",
+  "email1": "author00@ingenio.com",
+  "password": "Author@123",
+  "confirmPassword": "User@123"
+}
+
+// ### SignOut

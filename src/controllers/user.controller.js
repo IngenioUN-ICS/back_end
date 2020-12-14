@@ -33,7 +33,7 @@ usersCtrl.addAuthor = async (req, res, next) => {
     }
 
     user.roles.push("author");
-    user.roles = user.roles.filter(e => e !== "user");
+    user.roles = user.roles.filter((e) => e !== "user");
     user.email2 = request.email2;
     user.professionalCard = request.professionalCard;
     user.employmentHistory = request.employmentHistory;
@@ -58,7 +58,7 @@ usersCtrl.addAuthor = async (req, res, next) => {
 
 usersCtrl.getAllUsers = async (req, res) => {
   try {
-    const user = await User.find({ role: 0 }).select([
+    const user = await User.find({ roles: "user" }).select([
       "firstName",
       "lastName",
       "email1",
@@ -85,7 +85,7 @@ usersCtrl.getAllUsers = async (req, res) => {
 
 usersCtrl.getAllAuthors = async (req, res) => {
   try {
-    const author = await User.find({ role: 1 }).select([
+    const author = await User.find({ roles: "author" }).select([
       "firstName",
       "lastName",
       "myPublications",
@@ -245,7 +245,7 @@ usersCtrl.getAllFollowings = async (req, res) => {
         firstName: following.firstName,
         lastName: following.lastName,
         isFollowing: following.isFollowedByThisUser,
-        role: following.role,
+        roles: following.roles,
       });
     }
     logger.info(
@@ -292,7 +292,7 @@ usersCtrl.getAllFollowers = async (req, res) => {
         firstName: follower.firstName,
         lastName: follower.lastName,
         isFollowing: follower.isFollowingThisUser,
-        role: follower.role,
+        roles: follower.roles,
       });
     }
     logger.info(
@@ -368,7 +368,7 @@ usersCtrl.getAuthorPublications = async (req, res) => {
 
     const author = await User.findById(tempId, {
       myPublications: 1,
-      role: 1,
+      roles: 1,
     }).populate({
       path: "myPublications",
       select: ["title", "abstract", "listCategories", "listCategories"],
@@ -378,7 +378,7 @@ usersCtrl.getAuthorPublications = async (req, res) => {
       },
     });
 
-    if (author.role != 1) throw "This user is not an author";
+    if (!author.roles.includes("author")) throw "This user is not an author";
 
     return res.status(200).json(author.myPublications);
   } catch (err) {
@@ -418,7 +418,7 @@ usersCtrl.getPersonalData = async (req, res) => {
     return res.status(200).json({
       id: user.id,
       // ! check
-      role: user.roles,
+      roles: user.roles,
       firstName: user.firstName,
       lastName: user.lastName,
       email1: user.email1,
@@ -588,20 +588,20 @@ usersCtrl.getRandomUsers = async (req, res) => {
     var random = 0;
     var isFollowing = true;
 
-    if (req.params.role != "null") {
+    if (req.params.roles != "null") {
       if (req.params.categoryId != "null") {
         users = await User.find({
-          role: req.params.role,
+          roles: req.params.roles,
           subscriptionToCategories: req.params.categoryId,
         })
           .lean()
           .select(["role", "firstName", "lastName", "description"]);
       } else {
         users = await User.find({
-          role: req.params.role,
+          roles: req.params.roles,
         })
           .lean()
-          .select(["role", "firstName", "lastName", "description"]);
+          .select(["roles", "firstName", "lastName", "description"]);
       }
     }
 

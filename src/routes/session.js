@@ -13,11 +13,7 @@ router.use((req, res, next) => {
   next();
 });
 
-router.post(
-  "/signup",
-  checker.checkDuplicateEmail,
-  sessionCtrl.signUp
-);
+router.post("/signup", checker.checkDuplicateEmail, sessionCtrl.signUp);
 
 router.post("/signin", sessionCtrl.signIn);
 
