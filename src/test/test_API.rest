@@ -1,5 +1,5 @@
 @url = http://localhost:3000
-@tokenUsr = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmZDcxMGQ3Y2JlZjk3MDBjNDUyOWY3ZSIsImlhdCI6MTYwNzk1Mjk1NCwiZXhwIjoxNjA4MDM5MzU0fQ.6-uxY_PGgDZwLV9xRm4XMrpOdu0eHgOSPHWSIBO42sY
+@tokenUsr = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmZDcxMGQ3Y2JlZjk3MDBjNDUyOWY3ZSIsImlhdCI6MTYwNzk4MjkyNCwiZXhwIjoxNjA4MDY5MzI0fQ.OXGIHgGpi9yctR_66_cw_3Hf0VmmHFfM2tz5biD0SWA
 @tokenAdmin = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmZDY3OTRiZDhkMTE1MjU3ZmJkYjg1ZSIsImlhdCI6MTYwNzk0ODU2OSwiZXhwIjoxNjA4MDM0OTY5fQ.D9_cTWV4fp3pTld-Hx95prNjJYCdkGw0C1PcXZQRzIA
 @tokenAuthor = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmZDY3YTE3ZDhkMTE1MjU3ZmJkYjg2MCIsImlhdCI6MTYwNzk1MDAxMCwiZXhwIjoxNjA4MDM2NDEwfQ.J7BQ3lOOtWyclI2FDiNlHljcoRoFPn3z_y-rpLsNLA0
 
@@ -31,6 +31,7 @@ content-type: application/json
 
 ### SignIn - User
 POST {{url}}/session/signin HTTP/1.1
+//x-access-token: {{tokenUsr}}
 content-type: application/json
 
 {
@@ -56,8 +57,9 @@ content-type: application/json
   "password": "Admin@123"
 }
 
-
-// ### SignOut
+### SignOut
+GET {{url}}/session/signout HTTP/1.1
+x-access-token: {{tokenUsr}}
 
 // ---------------------- Category ------------------------
 

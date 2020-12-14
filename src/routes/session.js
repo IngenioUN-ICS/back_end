@@ -15,7 +15,7 @@ router.use((req, res, next) => {
 
 router.post("/signup", checker.checkDuplicateEmail, sessionCtrl.signUp);
 
-router.post("/signin", sessionCtrl.signIn);
+router.post("/signin", authentication.notLogged, sessionCtrl.signIn);
 
 router.get("/signout", authentication.verifyToken, sessionCtrl.signOut);
 
