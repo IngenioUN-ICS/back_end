@@ -1,7 +1,7 @@
 @url = http://localhost:3000
-@tokenUsr = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmZDY3YTE3ZDhkMTE1MjU3ZmJkYjg2MCIsImlhdCI6MTYwNzkwOTg2OCwiZXhwIjoxNjA3OTk2MjY4fQ.McvdnuroYq8VJJjloS1IRqvUXKSC3a5XrDeOjVobH3g"
-@tokenAdmin = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmZDY3YTE3ZDhkMTE1MjU3ZmJkYjg2MCIsImlhdCI6MTYwNzkwOTg2OCwiZXhwIjoxNjA3OTk2MjY4fQ.McvdnuroYq8VJJjloS1IRqvUXKSC3a5XrDeOjVobH3g"
-@tokenAuthor = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmZDY3YTE3ZDhkMTE1MjU3ZmJkYjg2MCIsImlhdCI6MTYwNzkwOTg2OCwiZXhwIjoxNjA3OTk2MjY4fQ.McvdnuroYq8VJJjloS1IRqvUXKSC3a5XrDeOjVobH3g"
+@tokenUsr = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmZDY3OTRiZDhkMTE1MjU3ZmJkYjg1ZSIsImlhdCI6MTYwNzk0ODU2OSwiZXhwIjoxNjA4MDM0OTY5fQ.D9_cTWV4fp3pTld-Hx95prNjJYCdkGw0C1PcXZQRzIA
+@tokenAdmin = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmZDY3OTRiZDhkMTE1MjU3ZmJkYjg1ZSIsImlhdCI6MTYwNzk0ODU2OSwiZXhwIjoxNjA4MDM0OTY5fQ.D9_cTWV4fp3pTld-Hx95prNjJYCdkGw0C1PcXZQRzIA
+@tokenAuthor = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmZDY3YTE3ZDhkMTE1MjU3ZmJkYjg2MCIsImlhdCI6MTYwNzk1MDAxMCwiZXhwIjoxNjA4MDM2NDEwfQ.J7BQ3lOOtWyclI2FDiNlHljcoRoFPn3z_y-rpLsNLA0
 
 // ---------------------- Session ------------------------
 
@@ -12,7 +12,7 @@ content-type: application/json
 {
   "firstName": "user",
   "lastName": "user",
-  "email1": "user00@ingenio.com",
+  "email1": "user01@ingenio.com",
   "password": "User@123",
   "confirmPassword": "User@123"
 }
@@ -29,6 +29,15 @@ content-type: application/json
   "confirmPassword": "User@123"
 }
 
+### SignIn - User
+POST {{url}}/session/signin HTTP/1.1
+content-type: application/json
+
+{
+  "email1": "user01@ingenio.com",
+  "password": "User@123"
+}
+
 ### SignIn - Author
 POST {{url}}/session/signin HTTP/1.1
 content-type: application/json
@@ -38,14 +47,169 @@ content-type: application/json
   "password": "Author@123"
 }
 
+### SignIn - Admin
+POST {{url}}/session/signin HTTP/1.1
+content-type: application/json
+
+{
+  "email1": "admin@ingenio.com",
+  "password": "Admin@123"
+}
+
+
 // ### SignOut
 
 // ---------------------- Category ------------------------
 
+### get all categories
+Get {{url}}/category/get-all-categories HTTP/1.1
+
+### add category
+POST {{url}}/category/add-category HTTP/1.1
+content-type: application/json
+x-access-token: {{tokenAdmin}}
+
+{
+	"name": "Mecatrónica",
+	"description": "Es una rama multidisciplinar de la ingeniería dedicada al diseño unificado de sistemas mecánicos y eléctricos, con el uso combinado de la robótica y de la ingeniería electrónica, informática, de telecomunicaciones, de sistemas, de control y de producto"
+}
+
 // ---------------------- Publication ------------------------
+
+### get publication by publicationID
+Get {{url}}/publication/get-publication/5fd68bce8db1f22e1bb8ce9e HTTP/1.1
+
+### get all publications by categoryId
+Get {{url}}/publication/get-all-publications/5fd6796fd8d115257fbdb85f HTTP/1.1
+
+### add publication
+POST  {{url}}/publication/add-publication HTTP/1.1
+content-type: application/json
+x-access-token: {{tokenAuthor}}
+
+{
+	"title": "Esta es de Sistemas <3 de otro autor",
+	"abstract": "auctualizo tabla users",
+	"keyWords": ["hola", "Mecatrónica"],
+	"text": "Había una vez ....",
+	"listCategories": ["5fd6796fd8d115257fbdb85f"]
+}
 
 // ---------------------- Notification ------------------------
 
-// ---------------------- AuthorRequest ------------------------
+### get notification
+Get {{url}}/notification/get-notifications/:authorId/:categoryId HTTP/1.1
+content-type: application/json
+x-access-token: {{tokenUsr}}
 
+### remove notification
+DELETE {{url}}/notification/remove-notification HTTP/1.1
+content-type: application/json
+x-access-token: {{tokenUsr}}
+
+### remove all notifications
+DELETE {{url}}/notification/remove-all-notifications HTTP/1.1
+content-type: application/json
+x-access-token: {{tokenUsr}}
+
+// ---------------------- AuthorRequest ------------------------
+### add authorRequest
+POST {{url}}/author-request/add-author-request HTTP/1.1
+x-access-token: {{tokenUsr}}
+content-type: application/json
+
+{
+	"email2": "email2@unal.edu.co",
+	"professionalCard": "2345-234ffgfd-d",
+	"employmentHistory": "employmentHistory",
+	"academicHistory": "Estudié en la universidad nacional"
+}
+
+### get author requesr by userId
+GET {{url}}/author-request/get-author-request/5fd6a79f3b5e2811e8158c88 HTTP/1.1
+x-access-token: {{tokenAdmin}}
+content-type: application/json
+
+### get all author requests
+GET {{url}}/author-request/get-all-author-requests HTTP/1.1
+x-access-token: {{tokenAdmin}}
+content-type: application/json
+
+### remove author request
+POST {{url}}/author-request/remove-author-request HTTP/1.1
+x-access-token: {{tokenAdmin}}
+content-type: application/json
+
+{
+  "userId": "5fd710d7cbef9700c4529f7e"
+}
 // ---------------------- User ------------------------
+
+### get user categories by userId
+GET {{url}}/user/get-user-categories/:userId HTTP/1.1
+
+### get use following by userId
+GET {{url}}/user/get-following/:userId HTTP/1.1
+
+
+### get use authors by userId
+GET {{url}}/user/get-user-authors/:userId HTTP/1.1
+
+### get use followers by userId
+GET {{url}}/user/get-followers/:userId HTTP/1.1
+
+
+### update role : common user to author 
+put {{url}}/user/add-author HTTP/1.1
+x-access-token: {{tokenAdmin}}
+content-type: application/json
+
+{
+  "userId": "5fd710d7cbef9700c4529f7e"
+}
+
+### get all users
+GET {{url}}/user/get-users HTTP/1.1
+x-access-token: {{tokenAdmin}}
+content-type: application/json
+
+
+### get all authors
+GET {{url}}/user/get-authors HTTP/1.1
+x-access-token: {{tokenAdmin}}
+content-type: application/json
+
+### add save publications
+POST  {{url}}/user/add-save-publication HTTP/1.1
+x-access-token: {{tokenUsr}}
+content-type: application/json
+
+{
+  "publicationId": "5fd68e13be564530867eaec6"
+}
+
+
+### get save publication
+GET {{url}}/user/get-save-publication HTTP/1.1
+x-access-token: {{tokenUsr}}
+content-type: application/json
+
+### get personal data by userId
+GET {{url}}/user/get-personal-data/5fd6794bd8d115257fbdb85e HTTP/1.1
+x-access-token: {{tokenUsr}}
+content-type: application/json
+
+### start following
+POST {{url}}/user/start-following HTTP/1.1
+x-access-token: {{tokenUsr}}
+content-type: application/json
+
+### stop follow
+POST {{url}}/user/stop-following HTTP/1.1
+x-access-token: {{tokenUsr}}
+content-type: application/json
+
+### get author publications
+GET {{url}}/user/get-author-publications/5fd67a17d8d115257fbdb860 HTTP/1.1
+x-access-token: {{tokenAuthor}}
+content-type: application/json

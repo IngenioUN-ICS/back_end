@@ -58,11 +58,12 @@ usersCtrl.addAuthor = async (req, res, next) => {
 
 usersCtrl.getAllUsers = async (req, res) => {
   try {
-    const user = await User.find({ roles: "user" }).select([
+    const user = await User.find(populate( {path: "roles", select:[{name : "user"} ]})).select([
       "firstName",
       "lastName",
       "email1",
     ]);
+    console.log(user)
 
     logger.info(
       "The requests requested by the user have been successfully retrieved"
