@@ -2,7 +2,6 @@ const app = require('./app')
 const fs = require('fs')
 const path = require('path')
 const https = require('https')
-const { ppid } = require('process')
 
 require('./database')
 
