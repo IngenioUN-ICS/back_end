@@ -1,25 +1,26 @@
-const { Router } = require( "express" );
-const router = Router( );
+const { Router } = require("express");
+const router = Router();
 
-const {
-    removeAllNotifications,
-    removeNotification,
-    getAllNotifications
+const notificationCtrl = require("../controllers/notification.controller");
+const authentication = require("../middlewares/authJwt");
 
-} = require( "../controllers/notification.controller" );
+router.get(
+ // "/get-notifications/:authorId/:categoryId",
+  "/get-notifications",
+  authentication.verifyToken,
+  notificationCtrl.getAllNotifications
+);
 
-const { isAuthenticated } = require( "../helpers/authenticated" );
+router.post(
+  "/remove-notification",
+  authentication.verifyToken,
+  notificationCtrl.removeNotification
+);
 
-router
-    .route( '/get-notifications/:authorId/:categoryId' )
-    .get( isAuthenticated, getAllNotifications );
-
-router
-    .route( '/remove-notification' )
-    .post( isAuthenticated, removeNotification );
-
-router
-    .route( '/remove-all-notifications' )
-    .post( isAuthenticated, removeAllNotifications );
+router.post(
+  "/remove-all-notifications",
+  authentication.verifyToken,
+  notificationCtrl.removeAllNotifications
+);
 
 module.exports = router;

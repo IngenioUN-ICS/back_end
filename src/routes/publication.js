@@ -1,37 +1,29 @@
-const { Router } = require( "express" );
-const router = Router( );
+const { Router } = require("express");
+const router = Router();
 
-const {
-    getSummaryOfPublications,
-    getPublication,
-    addPublication
-} = require( "../controllers/publication.controller" );
+const authentication = require("../middlewares/authJwt");
+const publicationCtrl = require("../controllers/publication.controller");
+const userCtrl = require("../controllers/user.controller");
+const notifCtrl = require("../controllers/notification.controller");
+const categoryCtrl = require("../controllers/category.controller");
 
-const {
-    addPublicationToAuthor
-} = require( "../controllers/user.controller" );
+router.get("/get-publication/:publicationId", publicationCtrl.getPublication);
 
-const {
-    updateNotifications
-} = require( "../controllers/notification.controller" );
+router.get(
+  "/get-all-publications/:categoryId",
+  publicationCtrl.getSummaryOfPublications
+);
 
-const {
-    updatePublications
-} = require( "../controllers/category.controller" );
-
-
-router
-    .route( "/get-publication/:publicationId" )
-    .get( getPublication );
-
-router
-    .route( "/get-all-publications/:categoryId" )
-    .get( getSummaryOfPublications );
-
-const { isAuthenticated } = require( "../helpers/authenticated" );
-
-router
-    .route( "/add-publication" )
-    .post( isAuthenticated, addPublication, addPublicationToAuthor, updateNotifications, updatePublications );
+router.post(
+  "/add-publication",
+  [
+    authentication.verifyToken,
+    authentication.isAuthor,
+    publicationCtrl.addPublication,
+    userCtrl.addPublicationToAuthor,
+    notifCtrl.updateNotifications,
+  ],
+  categoryCtrl.updatePublications
+);
 
 module.exports = router;

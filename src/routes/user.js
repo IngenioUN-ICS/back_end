@@ -1,85 +1,87 @@
-const { Router } = require( "express" );
-const router = Router( );
+const { Router } = require("express");
+const router = Router();
 
-const {
-    getAllUserCategories,
-    getAllFollowings,
-    getAllFollowers,
-    getAllUserAuthors,
-    addAuthor,
-    getAllUsers,
-    getAllAuthors,
-    addMySavePublications,
-    getAllSavedPublications,
-    getPersonalData,
-    getRandomUsers,
-    startFollowing,
-    stopFollowing,
-    getAuthorPublications
-} = require( "../controllers/user.controller" );
+const authentication = require("../middlewares/authJwt");
+const userCtrl = require("../controllers/user.controller");
+const notifCtrl = require("../controllers/notification.controller");
 
-const {
-    subscribe,
-    unsubscribe,
-    createSubscribers
-} = require( "../controllers/notification.controller" )
+router.get("/get-random-users/:role/:categoryId", userCtrl.getRandomUsers);
+router.get(
+  "/get-user-categories/:userId",
+  authentication.verifyToken,
+  userCtrl.getAllUserCategories
+);
 
-router
-    .route( "/get-random-users/:role/:categoryId" )
-    .get( getRandomUsers )
+router.get(
+  "/get-following/:userId",
+  authentication.verifyToken,
+  userCtrl.getAllFollowings
+);
 
-const { isAuthenticated } = require( "../helpers/authenticated" );
-const { route } = require("./session");
+router.get(
+  "/get-user-authors/:userId",
+  authentication.verifyToken,
+  userCtrl.getAllUserAuthors
+);
 
-router
-    .route( "/get-user-categories/:userId")
-    .get( isAuthenticated, getAllUserCategories)
+router.get(
+  "/get-followers/:userId",
+  authentication.verifyToken,
+  userCtrl.getAllFollowers
+);
 
- router
-    .route( "/get-following/:userId")
-    .get( isAuthenticated, getAllFollowings)
+router.put(
+  "/add-author",
+  [authentication.verifyToken, authentication.isAdmin, userCtrl.addAuthor],
+  notifCtrl.createSubscribers
+);
 
-router
-    .route( "/get-user-authors/:userId")
-    .get( isAuthenticated, getAllUserAuthors)
+router.get(
+  "/get-users",
+  [authentication.verifyToken, authentication.isAdmin],
+  userCtrl.getAllUsers
+);
 
-router
-    .route( "/get-followers/:userId")
-    .get( isAuthenticated, getAllFollowers)
-router
-    .route( "/add-author" )
-    .put( isAuthenticated, addAuthor, createSubscribers )
+router.get(
+  "/get-authors",
+  [authentication.verifyToken, authentication.isAdmin],
+  userCtrl.getAllAuthors
+);
 
-router
-    .route( "/get-users" )
-    .get( isAuthenticated, getAllUsers )
+router.post(
+  "/add-save-publication",
+  authentication.verifyToken,
+  userCtrl.addMySavePublications
+);
 
-router
-    .route( "/get-authors" )
-    .get( isAuthenticated, getAllAuthors )
+router.get(
+  "/get-save-publication",
+  authentication.verifyToken,
+  userCtrl.getAllSavedPublications
+);
 
-router
-    .route( "/add-save-publication" )
-    .post( isAuthenticated, addMySavePublications );
+router.get(
+  "/get-personal-data/:userId",
+  authentication.verifyToken,
+  userCtrl.getPersonalData
+);
 
-router
-    .route( "/get-save-publication" )
-    .get( isAuthenticated, getAllSavedPublications );
+router.post(
+  "/start-following",
+  [authentication.verifyToken, userCtrl.startFollowing],
+  notifCtrl.subscribe
+);
 
-router
-    .route( "/get-personal-data/:userId" )
-    .get( isAuthenticated, getPersonalData )
+router.post(
+  "/stop-following",
+  [authentication.verifyToken, userCtrl.stopFollowing],
+  notifCtrl.unsubscribe
+);
 
-router
-    .route( "/start-following" )
-    .post( isAuthenticated, startFollowing, subscribe )
-
-router
-    .route( "/stop-following" )
-    .post( isAuthenticated, stopFollowing, unsubscribe )
-
-router
-    .route( "/get-author-publications/:authorId" )
-    .get( isAuthenticated, getAuthorPublications );
+router.get(
+  "/get-author-publications/:authorId",
+  authentication.verifyToken,
+  userCtrl.getAuthorPublications
+);
 
 module.exports = router;

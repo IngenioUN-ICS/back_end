@@ -1,27 +1,29 @@
-const { Router } = require( "express" );
-const router = Router( );
+const { Router } = require("express");
+const router = Router();
 
-const {
-    addAuthorRequest,
-    getAuthorRequest,
-    getAllAuthorRequest,
-    removeAuthorRequest
-} = require( "../controllers/authorRequest.controller" );
+const authReqqCtrl = require("../controllers/authorRequest.controller");
+const authentication = require("../middlewares/authJwt");
 
-const { isAuthenticated } = require( "../helpers/authenticated" );
+router.post(
+  "/add-author-request",
+  [authentication.verifyToken, authentication.isUser],
+  authReqqCtrl.addAuthorRequest
+);
 
-router
-    .route("/add-author-request")
-    .post( isAuthenticated, addAuthorRequest);
-
-router
-    .route( "/get-author-request/:userId" )
-    .get( isAuthenticated, getAuthorRequest );
-router
-    .route( "/get-all-author-requests" )
-    .get( isAuthenticated, getAllAuthorRequest );
-router
-    .route("/remove-author-request")
-    .post( isAuthenticated, removeAuthorRequest);
+router.get(
+  "/get-author-request/:userId",
+  [authentication.verifyToken, authentication.isAdmin],
+  authReqqCtrl.getAuthorRequest
+);
+router.get(
+  "/get-all-author-requests",
+  [authentication.verifyToken, authentication.isAdmin],
+  authReqqCtrl.getAllAuthorRequest
+);
+router.post(
+  "/remove-author-request",
+  [authentication.verifyToken, authentication.isAdmin],
+  authReqqCtrl.removeAuthorRequest
+);
 
 module.exports = router;

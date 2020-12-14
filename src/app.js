@@ -1,53 +1,58 @@
-const rfs = require( 'rotating-file-stream' ); //version 2.x
-const session = require( 'express-session' );
-const passport = require( 'passport' );
-const express = require( 'express' ); // Framework
-const morgan = require( 'morgan' );   // Show browser requests
-const loggerHandler = require('./log/facadeLogger');
-const httpContext = require('express-http-context');
-const cors = require( 'cors' );
+const express = require("express"); // Framework
+const morgan = require("morgan"); // Show browser requests
+const cors = require("cors");
 
-require( './config/passport' );
-const app = express( );
+const config = require("./config");
+const loggerHandler = require("./log/facadeLogger");
+
+const userRoutes = require("./routes/user");
+const sessionRoutes = require("./routes/session");
+const categoryRoutes = require("./routes/category");
+const publicationRoutes = require("./routes/publication");
+const notificationRoutes = require("./routes/notification");
+const authorRequestRoutes = require("./routes/authorRequest");
+
+const { createRoles, createAdmin } = require("./libs/initialSetUp");
+
+const app = express();
+createRoles();
+createAdmin();
 
 // Settings
-app.set( 'port', process.env.PORT || 3000 );
+app.set("port", config.PORT);
 
-// Middleware
-app.use(morgan('combined', {
-    "stream": loggerHandler.fileStream
-}));
+const morganOptions = {
+  stream: loggerHandler.fileStream,
+};
 
-app.use(morgan('dev'));
+const corsOptions = {
+  origin: "http://localhost:8080",
+  credentials: true,
+};
 
-app.use(cors({
-    origin: "http://localhost:8080",
-    //origin: "https://ingeniofrontend.herokuapp.com",
-    credentials: true
-}) );
-app.use((req, res, next) => {
-    //res.header('Access-Control-Allow-Origin', 'https://ingeniofrontend.herokuapp.com');
-    res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
-    res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-    res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
-    next();
-});
-app.use( express.json() );
-app.use( session({
-    secret: 'IngenioUN',
-    resave: true,
-    saveUninitialized: true
-}));
-app.use( passport.initialize( ) );
-app.use( passport.session( ) );
+const corsConfiguration = (req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "http://localhost:8080");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method"
+  );
+  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
+  res.header("Allow", "GET, POST, OPTIONS, PUT, DELETE");
+  next();
+};
+
+// Middlewares
+app.use(morgan("combined", morganOptions));
+app.use(cors(corsOptions));
+app.use(corsConfiguration);
+app.use(express.json());
 
 // Routes
-app.use( '/session', require( './routes/session' ) );
-app.use( '/user', require( './routes/user' ) );
-app.use( '/author-request', require( './routes/authorRequest' ) );
-app.use( '/publication', require( './routes/publication' ) );
-app.use( '/category', require( './routes/category' ) );
-app.use( '/notification', require( './routes/notification' ) );
+app.use("/user", userRoutes);
+app.use("/session", sessionRoutes);
+app.use("/category", categoryRoutes);
+app.use("/publication", publicationRoutes);
+app.use("/notification", notificationRoutes);
+app.use("/author-request", authorRequestRoutes);
 
 module.exports = app;
