@@ -54,9 +54,6 @@ sessionCtrl.signUp = async (req, res) => {
       expiresIn: 86400, // 24 hours
     });
 
-    // Saving the User Object in Mongodb
-    const savedUser = await newUser.save();
-
     return res.status(200).json({ token });
   } catch (error) {
     console.log(error);

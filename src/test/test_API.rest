@@ -1,7 +1,7 @@
 @url = http://localhost:3000
-@tokenUsr = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmZDcxMGQ3Y2JlZjk3MDBjNDUyOWY3ZSIsImlhdCI6MTYwNzk1Mjk1NCwiZXhwIjoxNjA4MDM5MzU0fQ.6-uxY_PGgDZwLV9xRm4XMrpOdu0eHgOSPHWSIBO42sY
-@tokenAdmin = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmZDY3OTRiZDhkMTE1MjU3ZmJkYjg1ZSIsImlhdCI6MTYwNzk0ODU2OSwiZXhwIjoxNjA4MDM0OTY5fQ.D9_cTWV4fp3pTld-Hx95prNjJYCdkGw0C1PcXZQRzIA
-@tokenAuthor = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmZDY3YTE3ZDhkMTE1MjU3ZmJkYjg2MCIsImlhdCI6MTYwNzk1MDAxMCwiZXhwIjoxNjA4MDM2NDEwfQ.J7BQ3lOOtWyclI2FDiNlHljcoRoFPn3z_y-rpLsNLA0
+@tokenUsr = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmZDcxMGQ3Y2JlZjk3MDBjNDUyOWY3ZSIsImlhdCI6MTYwNzk2MTU2MSwiZXhwIjoxNjA4MDQ3OTYxfQ.9zHeVEAGRqZLc1NeDwbXcJXT2StJ3tStt6oKcXTi01s
+@tokenAdmin = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmZDY3OTRiZDhkMTE1MjU3ZmJkYjg1ZSIsImlhdCI6MTYwNzk2MTYwNywiZXhwIjoxNjA4MDQ4MDA3fQ.JejGlkhCoWk1zC06UtyWoYSu6MADw_emDgvNv_bktxQ
+@tokenAuthor = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmZDY3YTE3ZDhkMTE1MjU3ZmJkYjg2MCIsImlhdCI6MTYwNzk2MzY1MywiZXhwIjoxNjA4MDUwMDUzfQ.cdHmNpvua5xymCwaF6NqsIXTlbfkLSdpq-p6f1n42BA
 
 // ---------------------- Session ------------------------
 
@@ -160,21 +160,21 @@ x-access-token: {{tokenUsr}}
 content-type: application/json
 
 ### get use following by userId
-GET {{url}}/user/get-following/:userId HTTP/1.1
-x-access-token: {{tokenUsr}}
+GET {{url}}/user/get-following/5fd67a17d8d115257fbdb860 HTTP/1.1
+x-access-token: {{tokenAuthor}}
 content-type: application/json
 
-### get use authors by userId
-GET {{url}}/user/get-user-authors/:userId HTTP/1.1
+### get user authors by userId
+GET {{url}}/user/get-user-authors/5fd67a17d8d115257fbdb860 HTTP/1.1
 x-access-token: {{tokenUsr}}
 content-type: application/json
 
 ### get use followers by userId
-GET {{url}}/user/get-followers/:userId HTTP/1.1
+GET {{url}}/user/get-followers/5fd710d7cbef9700c4529f7e HTTP/1.1
 x-access-token: {{tokenUsr}}
 content-type: application/json
 
-### update role : common user to author 
+### update role : common user to author
 put {{url}}/user/add-author HTTP/1.1
 x-access-token: {{tokenAdmin}}
 content-type: application/json
@@ -216,12 +216,13 @@ content-type: application/json
 
 ### start following
 POST {{url}}/user/start-following HTTP/1.1
-x-access-token: {{tokenUsr}}
+x-access-token: {{tokenAuthor}}
 content-type: application/json
 
 {
   //"categoryId": "5fd6796fd8d115257fbdb85f", 
-  "authorId": "5fd67a17d8d115257fbdb860"
+  //"authorId": "5fd76ec4b6d7101b80c281fc",
+  "userId": "5fd710d7cbef9700c4529f7e"
 }
 
 ### stop follow
@@ -230,11 +231,12 @@ x-access-token: {{tokenUsr}}
 content-type: application/json
 
 {
-  //"categoryId": "5fd6796fd8d115257fbdb85f", 
-  "authorId": "5fd67a17d8d115257fbdb860"
+  //"categoryId": "5fd6796fd8d115257fbdb85f",
+  //"authorId": "5fd67a17d8d115257fbdb860",
+  "userId": "5fd710d7cbef9700c4529f7e"
 }
 
 ### get author publications
 GET {{url}}/user/get-author-publications/5fd67a17d8d115257fbdb860 HTTP/1.1
-x-access-token: {{tokenAuthor}}
+x-access-token: {{tokenUsr}}
 content-type: application/json
